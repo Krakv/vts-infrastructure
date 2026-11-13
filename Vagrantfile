@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "cloud-image/ubuntu-24.04"
+  config.vm.box = "generic/debian12""
 
   config.vm.define "k8s-master" do |master|
     master.vm.hostname = "k8s-master"
