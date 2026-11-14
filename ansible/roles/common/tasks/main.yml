@@ -1,0 +1,23 @@
+---
+
+  - name: Disable swap immediately
+    command: swapoff -a
+    changed_when: false
+
+  - name: Comment swap entries in fstab
+    replace:
+      path: /etc/fstab
+      regexp: '^([^#].*\s+swap\s+.*)$'
+      replace: '#\1'
+      backup: true
+  
+  - name: Verify swap is disabled
+    command: swapon --show
+    register: swap_status
+    changed_when: false
+
+  - name: Show swap status
+    debug:
+      msg: "Swap status: {{ 'disabled' if swap_status.stdout == '' else swap_status.stdout }}"
+
+
