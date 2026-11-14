@@ -3,14 +3,14 @@
 - name: Download containerd release
   ansible.builtin.get_url:
     url: https://github.com/containerd/containerd/releases/download/v2.4.2/containerd-2.4.2-linux-amd64.tar.gz
-    dest: /home/vagrant/containerd-2.4.2-linux-amd64.tar.gz
+    dest: /tmp/containerd-2.4.2-linux-amd64.tar.gz
     owner: root
     group: root
     mode: '0644'
 
 - name: Extract containerd binaries
   ansible.builtin.unarchive:
-    src: /home/vagrant/containerd-2.4.2-linux-amd64.tar.gz
+    src: /tmp/containerd-2.4.2-linux-amd64.tar.gz
     dest: /usr/local
     remote_src: true
 
@@ -60,14 +60,14 @@
 - name: Download cni release
   ansible.builtin.get_url:
     url: https://github.com/containernetworking/plugins/releases/download/v1.10.0/cni-plugins-linux-amd64-v1.10.0.tgz
-    dest: /home/vagrant/cni-plugins-linux-amd64-v1.10.0.tgz
+    dest: /tmp/cni-plugins-linux-amd64-v1.10.0.tgz
     owner: root
     group: root
     mode: '0644'
 
 - name: Extract cni binaries
   ansible.builtin.unarchive:
-    src: /home/vagrant/cni-plugins-linux-amd64-v1.10.0.tgz
+    src: /tmp/cni-plugins-linux-amd64-v1.10.0.tgz
     dest: /opt/cni/bin
     remote_src: true
 
