@@ -1,0 +1,47 @@
+---
+
+- name: Initialize Kubernetes master
+  ansible.builtin.command:
+    cmd: >-
+      kubeadm init
+      --apiserver-advertise-address={{ node_ip }}
+      --pod-network-cidr={{ pod_network_cidr }}
+    creates: /etc/kubernetes/admin.conf
+
+- name: Generate worker join command
+  ansible.builtin.command:
+    cmd: kubeadm token create --print-join-command
+  register: kubeadm_join_command
+  changed_when: false
+  no_log: true
+
+- name: Create .kube directory
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.kube"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0700'
+
+- name: Copy Kubernetes admin config
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{ ansible_user_dir }}/.kube/config"
+    remote_src: true
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+
+- name: Install kubectl
+  ansible.builtin.apt:
+    name: kubectl
+    state: present
+
+- name: Install Flannel
+  ansible.builtin.command:
+    cmd: kubectl apply -f https://github.com/flannel-io/flannel/releases/download/v0.28.10/kube-flannel.yml
+  become: false
+  register: flannel_apply
+  changed_when: >
+    'created' in flannel_apply.stdout or
+    'configured' in flannel_apply.stdout
