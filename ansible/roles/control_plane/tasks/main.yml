@@ -37,9 +37,22 @@
     name: kubectl
     state: present
 
+- name: Download Flannel manifest
+  ansible.builtin.get_url:
+    url: https://github.com/flannel-io/flannel/releases/download/v0.28.10/kube-flannel.yml
+    dest: /tmp/kube-flannel.yml
+    mode: '0644'
+
+- name: Set Flannel interface
+  ansible.builtin.lineinfile:
+    path: /tmp/kube-flannel.yml
+    regexp: '^\s*- --iface='
+    insertafter: '^\s*- --kube-subnet-mgr'
+    line: '        - --iface={{ flannel_iface }}'
+
 - name: Install Flannel
   ansible.builtin.command:
-    cmd: kubectl apply -f https://github.com/flannel-io/flannel/releases/download/v0.28.10/kube-flannel.yml
+    cmd: kubectl apply -f /tmp/kube-flannel.yml
   become: false
   register: flannel_apply
   changed_when: >
