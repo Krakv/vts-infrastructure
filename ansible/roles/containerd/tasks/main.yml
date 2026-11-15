@@ -85,7 +85,7 @@
 
 - name: Write containerd config
   ansible.builtin.copy:
-    content: "{{ containerd_config.stdout | regex_replace('(?m)^(\s*SystemdCgroup\s*=\s*)false$', '\1true') }}"
+    content: '{{ containerd_config.stdout | regex_replace("(?m)^(\s*SystemdCgroup\s*=\s*)false$", "\g<1>true") }}'
     dest: /etc/containerd/config.toml
     owner: root
     group: root
