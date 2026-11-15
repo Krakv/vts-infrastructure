@@ -85,15 +85,9 @@
 
 - name: Write containerd config
   ansible.builtin.copy:
-    content: "{{ containerd_config.stdout }}"
+    content: "{{ containerd_config.stdout | regex_replace('(?m)^(\s*SystemdCgroup\s*=\s*)false$', '\1true') }}"
     dest: /etc/containerd/config.toml
     owner: root
     group: root
     mode: '0644'
-
-- name: Enable SystemdCgroup
-  ansible.builtin.replace:
-    path: /etc/containerd/config.toml
-    regexp: '(^\s*SystemdCgroup\s*=\s*)false$'
-    replace: '\1true'
   notify: Restart containerd
