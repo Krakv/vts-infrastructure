@@ -97,11 +97,3 @@
     regexp: '(^\s*SystemdCgroup\s*=\s*)false$'
     replace: '\1true'
   notify: Restart containerd
-
-- name: Enable IPv4 forwarding
-  ansible.posix.sysctl:
-    name: net.ipv4.ip_forward
-    value: '1'
-    state: present
-    sysctl_file: /etc/sysctl.d/99-kubernetes.conf
-    reload: true

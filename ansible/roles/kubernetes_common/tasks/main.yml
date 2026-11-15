@@ -1,5 +1,22 @@
 ---
 
+- name: Load br_netfilter kernel module
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Configure kernel networking for Kubernetes
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: '1'
+    state: present
+    sysctl_file: /etc/sysctl.d/99-kubernetes.conf
+    reload: true
+  loop:
+    - name: net.bridge.bridge-nf-call-iptables
+    - name: net.bridge.bridge-nf-call-ip6tables
+    - name: net.ipv4.ip_forward
+
 - name: Update apt cache
   become: true
   ansible.builtin.apt:
