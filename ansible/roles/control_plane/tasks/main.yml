@@ -99,13 +99,13 @@
 
 - name: Download Cert Manager manifest
   ansible.builtin.get_url:
-    url: https://github.com/cert-manager/cert-manager/releases/download/v1.1.1/cert-manager.yaml
-    dest: /tmp/cert-manager-v1.1.1.yml
+    url: https://github.com/cert-manager/cert-manager/releases/download/v1.21.3/cert-manager.yaml
+    dest: /tmp/cert-manager-v1.21.3.yml
     mode: '0644'
 
 - name: Install Cert Manager
   ansible.builtin.command:
-    cmd: kubectl apply -f /tmp/cert-manager-v1.1.1.yml
+    cmd: kubectl apply -f /tmp/cert-manager-v1.21.3.yml
   become: false
   register: cert_manager_apply
   changed_when: >
