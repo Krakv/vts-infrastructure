@@ -113,6 +113,7 @@
     state: present
     wait: true
     update_repo_cache: true
+    kubeconfig: "/home/{{ ansible_user }}/.kube/config"
     values:
       providers:
         kubernetesGateway:
