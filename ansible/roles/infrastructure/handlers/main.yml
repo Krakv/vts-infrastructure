@@ -1,0 +1,5 @@
+---
+- name: Update Helm repositories
+  ansible.builtin.command:
+    cmd: helm repo update traefik
+  changed_when: false
