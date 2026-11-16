@@ -13,6 +13,7 @@
   become: true
   roles:
     - control_plane
+    - infrastructure
 
 - name: Join workers
   hosts: workers
