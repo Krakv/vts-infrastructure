@@ -88,6 +88,14 @@
     'created' in metallb_apply.stdout or
     'configured' in metallb_apply.stdout
 
+- name: Install Python dependencies
+  ansible.builtin.apt:
+    name:
+      - python3-yaml
+      - python3-kubernetes
+    state: present
+    update_cache: true
+
 - name: Add Traefik Helm repository
   kubernetes.core.helm_repository:
     name: traefik
