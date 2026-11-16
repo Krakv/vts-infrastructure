@@ -88,9 +88,15 @@
     'created' in metallb_apply.stdout or
     'configured' in metallb_apply.stdout
 
+- name: Copy MetalLB configuration
+  ansible.builtin.copy:
+    src: metallb-config.yaml
+    dest: /tmp/metallb-config.yaml
+    mode: "0644"
+
 - name: Configure MetalLB address pool
   ansible.builtin.command:
-    cmd: kubectl apply -f metallb-config.yaml
+    cmd: kubectl apply -f /tmp/metallb-config.yaml
   register: metallb_config
   changed_when: "'created' in metallb_config.stdout or 'configured' in metallb_config.stdout"
   become: false
