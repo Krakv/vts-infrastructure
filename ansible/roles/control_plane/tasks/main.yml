@@ -102,3 +102,27 @@
     remote_src: true
     mode: "0755"
 
+- name: Prepare MetalLB installation
+  ansible.builtin.shell:
+    cmd: |
+      kubectl get configmap kube-proxy -n kube-system -o yaml | 
+      sed -e "s/strictARP: false/strictARP: true/" | 
+      kubectl apply -f - -n kube-system
+  register: kube_proxy_edit_result
+  changed_when: "'configured' in kube_proxy_edit_result.stdout"
+  become: false
+
+- name: Download MetalLB manifest
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/metallb/metallb/v0.16.2/config/manifests/metallb-frr-k8s.yaml
+    dest: /tmp/metallb-frr-k8s-v0.16.2.yaml
+    mode: '0644'
+
+- name: Install MetalLB
+  ansible.builtin.command:
+    cmd: kubectl apply -f /tmp/metallb-frr-k8s-v0.16.2.yaml
+  become: false
+  register: metallb_apply
+  changed_when: >
+    'created' in metallb_apply.stdout or
+    'configured' in metallb_apply.stdout
