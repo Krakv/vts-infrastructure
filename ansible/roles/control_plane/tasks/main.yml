@@ -82,32 +82,23 @@
   register: storageclass_patch
   changed_when: "'no change' not in storageclass_patch.stdout"
 
-- name: Download Ingress Nginx Controller manifest
+- name: Download Helm Binary
   ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.15.1/deploy/static/provider/cloud/deploy.yaml
-    dest: /tmp/ingress-nginx-controller-v1.15.1.yml
+    url: https://get.helm.sh/helm-v4.3.2-linux-amd64.tar.gz
+    dest: /tmp/helm-v4.3.2-linux-amd64.tar.gz
     mode: '0644'
 
-- name: Install Ingress Nginx Controller
-  ansible.builtin.command:
-    cmd: kubectl apply -f /tmp/ingress-nginx-controller-v1.15.1.yml
-  become: false
-  register: ingress_nginx_controller_apply
-  changed_when: >
-    'created' in ingress_nginx_controller_apply.stdout or
-    'configured' in ingress_nginx_controller_apply.stdout
+- name: Extract Helm archive
+  ansible.builtin.unarchive:
+    src: /tmp/helm-v4.3.2-linux-amd64.tar.gz
+    dest: /tmp
+    remote_src: true
+    creates: "/tmp/linux-amd64/helm"
 
-- name: Download Cert Manager manifest
-  ansible.builtin.get_url:
-    url: https://github.com/cert-manager/cert-manager/releases/download/v1.21.3/cert-manager.yaml
-    dest: /tmp/cert-manager-v1.21.3.yml
-    mode: '0644'
+- name: Install Helm binary
+  ansible.builtin.copy:
+    src: /tmp/linux-amd64/helm
+    dest: /usr/local/bin
+    remote_src: true
+    mode: "0755"
 
-- name: Install Cert Manager
-  ansible.builtin.command:
-    cmd: kubectl apply -f /tmp/cert-manager-v1.21.3.yml
-  become: false
-  register: cert_manager_apply
-  changed_when: >
-    'created' in cert_manager_apply.stdout or
-    'configured' in cert_manager_apply.stdout
