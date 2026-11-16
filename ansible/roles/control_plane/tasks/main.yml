@@ -81,3 +81,18 @@
   become: false
   register: storageclass_patch
   changed_when: "'no change' not in storageclass_patch.stdout"
+
+- name: Download Ingress Nginx Controller manifest
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.15.1/deploy/static/provider/cloud/deploy.yaml
+    dest: /tmp/ingress-nginx-controller-v1.15.1.yml
+    mode: '0644'
+
+- name: Install Ingress Nginx Controller
+  ansible.builtin.command:
+    cmd: kubectl apply -f /tmp/ingress-nginx-controller-v1.15.1.yml
+  become: false
+  register: ingress_nginx_controller_apply
+  changed_when: >
+    'created' in ingress_nginx_controller_apply.stdout or
+    'configured' in ingress_nginx_controller_apply.stdout
