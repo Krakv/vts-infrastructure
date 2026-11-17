@@ -194,24 +194,3 @@
   changed_when: >
     'created' in sealed_secrets_apply.stdout or
     'configured' in sealed_secrets_apply.stdout
-
-- name: Download kubeseal
-  ansible.builtin.get_url:
-    url: https://github.com/bitnami/sealed-secrets/releases/download/v0.41.2/kubeseal-0.41.2-linux-amd64.tar.gz
-    dest: /tmp/kubeseal-v0.41.2.tar.gz
-    mode: "0644"
-
-- name: Extract kubeseal
-  ansible.builtin.unarchive:
-    src: /tmp/kubeseal-v0.41.2.tar.gz
-    dest: /tmp
-    remote_src: true
-    include:
-      - kubeseal
-
-- name: Install kubeseal
-  ansible.builtin.copy:
-    src: /tmp/kubeseal
-    dest: /usr/local/bin/kubeseal
-    mode: "0755"
-    remote_src: true
