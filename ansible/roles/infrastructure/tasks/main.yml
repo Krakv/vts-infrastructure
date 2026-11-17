@@ -75,13 +75,13 @@
 
 - name: Download MetalLB manifest
   ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/metallb/metallb/v0.16.2/config/manifests/metallb-frr-k8s.yaml
-    dest: /tmp/metallb-frr-k8s-v0.16.2.yaml
+    url: https://raw.githubusercontent.com/metallb/metallb/v0.16.2/config/manifests/metallb-native.yaml
+    dest: /tmp/metallb-native-v0.16.2.yaml
     mode: '0644'
 
 - name: Install MetalLB
   ansible.builtin.command:
-    cmd: kubectl apply -f /tmp/metallb-frr-k8s-v0.16.2.yaml
+    cmd: kubectl apply -f /tmp/metallb-native-v0.16.2.yaml
   become: false
   register: metallb_apply
   changed_when: >
