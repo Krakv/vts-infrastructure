@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vts
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Krakv/vts-kubernetes.git
+    targetRevision: HEAD
+    path: .
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: vts
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
